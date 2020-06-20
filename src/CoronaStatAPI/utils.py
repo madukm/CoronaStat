@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 
-corona = '../HIST_PAINEL_COVIDBR_17jun2020.xlsx'
+corona = 'HIST_PAINEL_COVIDBR_15jun2020.xlsx'
 
 def load_xlsx(filename):
     data = pd.read_excel(filename, usecols=['regiao', 'estado', 'municipio', 'data', 'casosAcumulado', 'casosNovos', 'obitosAcumulado', 'obitosNovos', 'Recuperadosnovos', 'emAcompanhamentoNovos']) 
@@ -10,13 +10,12 @@ def load_xlsx(filename):
 # Casos por região
 def by_region(corona, name_region):
     data = load_xlsx(corona)
-    brasil = data.query('regiao == name_region')
-    return brasil
+    brasil = data.query('regiao == "Brasil"')
+    return brasil.tolist()
 
 def region_cases(corona, name_region):
     region = by_region(corona, name_region)
-    print(type(obj))
-    return region['casosAcumulado']
+    return region['casosAcumulado'].values.tolist()
 
 def region_deaths(corona, name_region):
     region = by_region(corona, name_region)
@@ -62,3 +61,5 @@ def city_recovered(corona, name_city):
     city = by_region(corona, name_city)
     return city['Recuperadosnovos']
 
+if __name__ == "__main__":
+    print(region_cases(corona, 'Brasil'))

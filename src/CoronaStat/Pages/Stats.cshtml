@@ -4,14 +4,85 @@
     ViewData["Title"] = "Stats";
 }
 
+<!--Required for charting...-->
+<head>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.js"></script>
+</head>
+
 <div>
 	<h1>Estatísticas</h1>
 	<!--Divisão que responde por 'tudo'-->
 	<div>
+		<form method="post">
+			<input asp-for="Location.Name" />
+			<input asp-for="Location.StartDate" />
+			<input asp-for="Location.EndDate" />
+			<button class="btn btn-default">
+				Test Here
+			</button>
+		</form>
+	</div>
 		<!--Colocar chart.js aqui-->
-		<input type="text" id="search_location" />
-		<button type="button" class="btn btn-default btn-lg" aria-label="add_something">
-			<span class="glyphicon glyphicon-star" aria-hidden="true"></span> Hello
-		</button>
+	<div>
+		<pre>@Model.testnamestring</pre>
+		<pre>@Model.teststartstring</pre>
+		<pre>@Model.testendstring</pre>
+	</div>
+
+	<div>
+		<!--CHARTS HERE-->
+		@foreach (var location in Model.Locations)
+		{
+			<pre>@location.Name</pre>
+			<pre>
+				@Html.Raw(Json.Serialize(@location.Data))
+				@Html.Raw(Json.Serialize(CoronaStat.Models.LocationData.GenerateDateSpan(1, 4)))
+			</pre>
+			<canvas id="@location.Id" width="300" height="150"></canvas>
+			<script>
+				var ctx = document.getElementById("@location.Id").getContext('2d');
+
+				var data_stuff = {
+					type: 'line',
+					data: {
+						@*labels: [1, 2, 3, 4],*@
+						labels: @Html.Raw(Json.Serialize(Model.data_span)),
+						datasets: [{
+							label: '# of Votes',
+							@*data: [1, 2, 3, 4],*@
+							data: @Html.Raw(Json.Serialize(Model.test_data)),
+							backgroundColor: [
+								'rgba(255, 99, 132, 0.2)',
+								'rgba(54, 162, 235, 0.2)',
+								'rgba(255, 206, 86, 0.2)',
+								'rgba(75, 192, 192, 0.2)',
+								'rgba(153, 102, 255, 0.2)',
+								'rgba(255, 159, 64, 0.2)'
+							],
+							borderColor: [
+								'rgba(255, 99, 132, 1)',
+								'rgba(54, 162, 235, 1)',
+								'rgba(255, 206, 86, 1)',
+								'rgba(75, 192, 192, 1)',
+								'rgba(153, 102, 255, 1)',
+								'rgba(255, 159, 64, 1)'
+							],
+							borderWidth: 1
+						}]
+					},
+					options: {
+						scales: {
+							yAxes: [{
+								ticks: {
+									beginAtZero: true
+								}
+							}]
+						}
+					}
+				};
+
+				var BrazilStats = new Chart(ctx, data_stuff);
+			</script>
+		}
 	</div>
 </div>

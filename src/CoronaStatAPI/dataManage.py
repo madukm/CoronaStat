@@ -3,10 +3,10 @@ import numpy as np
 
 class dataManage:
 
-    covid = '../teste.xlsx'
+    covid = 'teste.xlsx'
 
     def __init__(self):
-        self.data = pd.read_excel(Data.covid, usecols=['regiao', 'estado', 'municipio', 'data', 'casosAcumulado', 'casosNovos', 'obitosAcumulado', 'obitosNovos'])
+        self.data = pd.read_excel(dataManage.covid, usecols=['regiao', 'estado', 'municipio', 'data', 'casosAcumulado', 'casosNovos', 'obitosAcumulado', 'obitosNovos'])
 
     def by_region(self, name_region):
         brasil = self.data.query('regiao == @name_region')
@@ -60,7 +60,7 @@ class dataManage:
 
 # TESTING 
 def main():
-    data1 = Data()
+    data1 = dataManage()
     print("ola")
     brazil = data1.region_cases('Brasil')
 #data1.open_xlsx()

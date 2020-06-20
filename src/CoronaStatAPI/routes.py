@@ -4,7 +4,9 @@ import dataManage
 
 app = Flask(__name__)
 
+data1 = dataManage.dataManage()
+
 @app.route("/api/dados/Brasil")
 def get_brasil():
-    return utils.region_cases(utils.corona, 'Brasil')
+    return json.dumps(data1.region_cases('Brasil').tolist())
 

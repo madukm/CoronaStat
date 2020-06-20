@@ -2,12 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using CoronaStat.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.EntityFrameworkCore;
 
 namespace CoronaStat
 {
@@ -24,6 +26,8 @@ namespace CoronaStat
 		public void ConfigureServices(IServiceCollection services)
 		{
 			services.AddRazorPages();
+			services.AddDbContext<CovidLocationDbContext>(options =>
+							  options.UseInMemoryDatabase("CoronaDados"));
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
