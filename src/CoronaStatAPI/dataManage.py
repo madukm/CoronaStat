@@ -11,7 +11,7 @@ class dataManage:
     def read_data(self):
         self.data = pd.read_excel(dataManage.covid,
                                   usecols=['regiao', 'estado', 'municipio', 'data', 'casosAcumulado', 'casosNovos',
-                                           'obitosAcumulado', 'obitosNovos'])
+                                           'obitosAcumulado', 'obitosNovos', 'codmun')
         self.data = self.data.set_index(['data'])
 
     def by_region(self, name_region):
@@ -42,6 +42,7 @@ class dataManage:
         state = self.data.query('estado == @name_state')
         state = state.loc[start_date:end_date]
         state = state.loc[state['municipio'].isnull()]
+        state = state.loc[state['codmun'].isnull()]
         #state = self.by_state(name_state)
         return state['casosAcumulado']
 
