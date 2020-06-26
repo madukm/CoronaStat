@@ -33,11 +33,7 @@
 		<!--CHARTS HERE-->
 		@foreach (var location in Model.Locations)
 		{
-			<pre>@location.Name</pre>
-			<pre>
-				@Html.Raw(Json.Serialize(@location.Data))
-				@Html.Raw(Json.Serialize(CoronaStat.Models.LocationData.GenerateDateSpan(1, 4)))
-			</pre>
+			<p>Ultimo inserido: @location.Name</p>
 			<canvas id="@location.Id" width="300" height="150"></canvas>
 			<script>
 				var ctx = document.getElementById("@location.Id").getContext('2d');
@@ -48,9 +44,9 @@
 						@*labels: [1, 2, 3, 4],*@
 						labels: @Html.Raw(Json.Serialize(Model.data_span)),
 						datasets: [{
-							label: '# of Votes',
+							label: 'Número de contaminados',
 							@*data: [1, 2, 3, 4],*@
-							data: @Html.Raw(Json.Serialize(Model.test_data)),
+							data: @Html.Raw(location.JsonData),
 							backgroundColor: [
 								'rgba(255, 99, 132, 0.2)',
 								'rgba(54, 162, 235, 0.2)',

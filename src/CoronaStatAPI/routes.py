@@ -6,6 +6,7 @@ import dataManage
 app = Flask(__name__)
 
 data1 = dataManage.dataManage()
+data1.read_data()
 
 @app.route("/api/dados/Brasil")
 def get_brasil():
@@ -20,8 +21,8 @@ def get_state():
     state_name = request.args.get('q')
     start_date = request.args.get('startdate')
     end_date = request.args.get('enddate')
-    data1.data = data1.data.loc[start_date:end_date]
-    return json.dumps(data1.state_cases(state_name).tolist())
+    print(state_name, start_date, end_date)
+    return json.dumps(data1.state_cases(state_name, start_date, end_date).tolist())
 
 @app.route("/api/mortes/estado")
 def get_deaths_state():

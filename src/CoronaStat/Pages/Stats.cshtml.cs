@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Net.Http;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Web;
 
 using CoronaStat.Models;
 using Microsoft.EntityFrameworkCore;
@@ -35,23 +36,6 @@ namespace CoronaStat.Pages
         public List<int> test_data { get; private set; } = new List<int>();
         public List<int> data_span { get; set; } = new List<int>();
 
-        /*public async Task OnGetAsync()
-        {
-        }
-        */
-
-        List<int> aaa(int a)
-        {
-            List<int> ret_list = new List<int>();
-
-            for(int i = 0; i < a; i++)
-            {
-                ret_list.Add(i);
-            }
-
-            return ret_list;
-        }
-
         //Here it may contain the data to be displayed.
         public async Task OnPostAsync()
         {
@@ -63,13 +47,22 @@ namespace CoronaStat.Pages
             teststartstring = ChartLocation.StartDate.ToString();
             testendstring = ChartLocation.EndDate.ToString();
 
-            //Here we must wait for API to answer
+            var builder = new UriBuilder("http://127.0.0.1:5000/api/dados/estado");
+            var query = HttpUtility.ParseQueryString(builder.Query);
+            query["q"] = ChartLocation.Name;
+            query["startdate"] = ChartLocation.StartDate.Date.ToString("yyyy/MM/dd");
+            query["enddate"] = ChartLocation.EndDate.Date.ToString("yyyy/MM/dd");
+            builder.Query = query.ToString();
+            string url = builder.ToString();
 
+            testnamestring = url;
+
+            //Here we must wait for API to answer
             HttpClient httpClient = new HttpClient();
-            var res = await httpClient.GetStringAsync("http://127.0.0.1:5000/api/dados/Brasil");
+            var res = await httpClient.GetStringAsync(url);
             List<int> a_list = JsonSerializer.Deserialize<List<int>>(res.ToString());
-            test_data = a_list;
-            data_span = aaa(test_data.Count);
+            ChartLocation.JsonData = JsonSerializer.Serialize(a_list);
+            data_span = Enumerable.Range(0, a_list.Count).ToList();
 
             //Adding new location to db context.
             _db.LocationDataStorage.Add(ChartLocation);

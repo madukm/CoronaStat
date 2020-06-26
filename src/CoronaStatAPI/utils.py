@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 
-corona = 'HIST_PAINEL_COVIDBR_15jun2020.xlsx'
+corona = 'test.xlsx'
 
 def load_xlsx(filename):
     data = pd.read_excel(filename, usecols=['regiao', 'estado', 'municipio', 'data', 'casosAcumulado', 'casosNovos', 'obitosAcumulado', 'obitosNovos', 'Recuperadosnovos', 'emAcompanhamentoNovos']) 
