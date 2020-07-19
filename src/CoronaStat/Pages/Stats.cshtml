@@ -7,6 +7,7 @@
 <!--Required for charting...-->
 <head>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.js"></script>
+	<script src="~/js/site.js"></script>
 </head>
 
 <div>
@@ -14,26 +15,60 @@
 	<!--Divisão que responde por 'tudo'-->
 	<div>
 		<form method="post">
-			<input asp-for="Location.Name" />
-			<input asp-for="Location.StartDate" />
-			<input asp-for="Location.EndDate" />
-			<button class="btn btn-default">
-				Test Here
-			</button>
+			<div class="form-group">
+				@*<input list="browsers" name="browser">
+		<datalist id="browsers">
+
+		</datalist>*@
+				<table style="width:100%">
+					<tr>
+						<th><label for="input_state">Estado:</label></th>
+						<th><label for="input_city">Cidade:</label></th>
+						<th><label for="start_date_picker">Início:</label></th>
+						<th><label for="end_date_picker">Fim:</label></th>
+					</tr>
+					<tr>
+						<td>
+							<!--This is for state names-->
+							<input id="input_state" list="state_locations" onchange="get_cities_from_state(this.value)" asp-for="Location.StateName" />
+							<datalist id="state_locations">
+								@foreach (string avail_loc in Model.AvailableStates)
+								{
+									<option value="@avail_loc" />
+								}
+							</datalist>
+						</td>
+						<td>
+							<input id="input_city" list="city_locations" asp-for="Location.CityName" />
+							<div id="city_input_options">
+							</div>
+						</td>
+						<td>
+							<input asp-for="Location.StartDate" type="date" id="start_date_picker" asp-format="{0:yyyy-MM-dd}"
+										 min="@Html.Raw(Model.date.StartDate.ToString("yyyy-MM-dd"))" max="@Html.Raw(Model.date.EndDate.ToString("yyyy-MM-dd"))">
+						</td>
+						<td>
+							<input asp-for="Location.EndDate" type="date" id="end_date_picker" asp-format="{0:yyyy-MM-dd}"
+								min="@Html.Raw(Model.date.StartDate.ToString("yyyy-MM-dd"))" max="@Html.Raw(Model.date.EndDate.ToString("yyyy-MM-dd"))">
+						</td>
+						<td>
+							<button class="btn btn-default">
+								Get Data
+							</button>
+						</td>
+					</tr>
+				</table>
+				
+			</div>			
 		</form>
-	</div>
-		<!--Colocar chart.js aqui-->
-	<div>
-		<pre>@Model.testnamestring</pre>
-		<pre>@Model.teststartstring</pre>
-		<pre>@Model.testendstring</pre>
 	</div>
 
 	<div>
 		<!--CHARTS HERE-->
 		@foreach (var location in Model.Locations)
 		{
-			<p>Ultimo inserido: @location.Name</p>
+			<p>Nome do lugar: @location.StateName</p>
+			<p>Max: @Model.Locations.Select(x => x.maxValue).Max()</p>
 			<canvas id="@location.Id" width="300" height="150"></canvas>
 			<script>
 				var ctx = document.getElementById("@location.Id").getContext('2d');
@@ -47,30 +82,22 @@
 							label: 'Número de contaminados',
 							@*data: [1, 2, 3, 4],*@
 							data: @Html.Raw(location.JsonData),
-							backgroundColor: [
-								'rgba(255, 99, 132, 0.2)',
-								'rgba(54, 162, 235, 0.2)',
-								'rgba(255, 206, 86, 0.2)',
-								'rgba(75, 192, 192, 0.2)',
-								'rgba(153, 102, 255, 0.2)',
-								'rgba(255, 159, 64, 0.2)'
-							],
-							borderColor: [
-								'rgba(255, 99, 132, 1)',
-								'rgba(54, 162, 235, 1)',
-								'rgba(255, 206, 86, 1)',
-								'rgba(75, 192, 192, 1)',
-								'rgba(153, 102, 255, 1)',
-								'rgba(255, 159, 64, 1)'
-							],
-							borderWidth: 1
+							borderColor: 'rgba(@Model.randgen.Next(256), @Model.randgen.Next(256), @Model.randgen.Next(256), 0.8)',
+							backgroundColor: 'rgba(0, 0, 0, 0.8)',
+							borderWidth: 1,
+							fill: false
 						}]
 					},
 					options: {
+						title: {
+							display: true,
+							text: '@Html.Raw(location.StateName)'
+						},
 						scales: {
 							yAxes: [{
 								ticks: {
-									beginAtZero: true
+									beginAtZero: true,
+									max: @Html.Raw(Model.Locations.Select(x => x.maxValue).Max())
 								}
 							}]
 						}
