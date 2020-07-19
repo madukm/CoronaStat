@@ -48,4 +48,10 @@ def get_deaths_city(city_name):
     data1.data = data1.data.loc[start_date:end_date]
     return json.dumps(data1.city_deaths(city_name).tolist())
 
+@app.route("/api/nomes/cidade")
+def get_names_city(state_name):
+    state_name = request.args.get('state')
+    return json.dumps(data1.get_name_city(state_name))
 
+@app.route("/api/datas"):
+    return json.dumps(data1.get_start_end_date().tolist())
